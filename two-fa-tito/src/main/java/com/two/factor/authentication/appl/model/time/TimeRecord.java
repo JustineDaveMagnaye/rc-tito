@@ -1,59 +1,66 @@
 package com.two.factor.authentication.appl.model.time;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class TimeRecord {
-    private int employeeNo;
-    private long timeIn;
-    private long timeOut;
-    private double totalHours;
-    private Date createdAt;
 
-    public TimeRecord(int employeeNo) {
+    private String employeeNo;
+    private Timestamp timeIn;
+    private Timestamp timeOut;
+    private double totalHours;
+    private Timestamp createdAt;
+
+    public TimeRecord(String employeeNo) {
         this.employeeNo = employeeNo;
-        this.timeIn = -1;
-        this.timeOut = -1;
+        this.timeIn = null;
+        this.timeOut = null;
         this.totalHours = 0;
-        this.createdAt = new Date(); // Set createdAt to the current date
+        this.createdAt = new Timestamp(System.currentTimeMillis());
     }
 
-    public int getEmployeeNo() {
+    // Getters and Setters
+    public String getEmployeeNo() {
         return employeeNo;
     }
 
-    public long getTimeIn() {
+    public Timestamp getTimeIn() {
         return timeIn;
     }
 
-    public long getTimeOut() {
+    public void setTimeIn(Timestamp timeIn) {
+        this.timeIn = timeIn;
+        updateTotalHours(); // Update total hours when timeIn is set
+    }
+
+    public Timestamp getTimeOut() {
         return timeOut;
+    }
+
+    public void setTimeOut(Timestamp timeOut) {
+        this.timeOut = timeOut;
+        updateTotalHours(); // Update total hours when timeOut is set
     }
 
     public double getTotalHours() {
         return totalHours;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
+    public void setTotalHours(double totalHours) {
+        this.totalHours = totalHours; // Allow manual setting of total hours
     }
 
-    public void timeIn() {
-        this.timeIn = System.currentTimeMillis();
-    }
-
-    public void timeOut() {
-        this.timeOut = System.currentTimeMillis();
-        updateTotalHours(); // Update totalHours when timeOut is set
+    public void setCreatedAt(Timestamp createdAt) {
+        this.createdAt = createdAt;
     }
 
     private void updateTotalHours() {
-        if (timeIn != -1 && timeOut != -1) {
-            long durationMillis = timeOut - timeIn;
+        if (timeIn != null && timeOut != null) {
+            long durationMillis = timeOut.getTime() - timeIn.getTime();
             this.totalHours = durationMillis / 3600000.0; // Convert milliseconds to hours
         }
     }
 
     public boolean hasTimedIn() {
-        return timeIn != -1;
+        return timeIn != null;
     }
 }
